@@ -34,12 +34,13 @@ class Player(BasePlayer):
         return self.hand
     
     def hit(self):
-        self.hand.callForCard()
-    
-    
-    def stand(self):
         
-        pass
+        if self.hand.total <=21:
+            self.isBusted = False
+        else:
+            self.isBusted = True
+    
+   
 
 class Dealer(BasePlayer):
     
@@ -205,26 +206,49 @@ class Game(object):
         
       
         
-        if self.playing == True:
-            print('--- for a total of ' + str(self.dealer.hand.calc_val()))
-            self.player.bankRoll-= self.bet
-        
+       
         self.playing = True
-        
+        self.result = 'Would you like to hit or stand?: '
     
         
     def play(self):
         
-        print("\nCurrent Hand: " + str(self.player.current_hand()))
-        print("Current Hand Value: " + str(self.player.hand.total))
-        print("Current Pot: $" + str(self.player.bankRoll) + '\n')
+        self.printPlayerStats()
         
         print('Dealers hand: ' )
         self.dealer.hand.show(hidden=True)
+     
         
+         if self.playing == True:
+            print('--- for a total of ' + str(self.dealer.hand.calc_val()))
+            self.player.bankRoll-= self.bet
         
+        hit = ''
+      
+        while hit != 's' and self.playing == True:
+            
+            hit = input(self.result)
+            if hit.lower() == 'h':
+                self.player.hand.callForCard(self.deck.deal())
+                self.printPlayerStats()
+                self.player.hit()
+                if self.player.isBusted:
+                    self.playing == False
+                    print('Busted!')
+                    break
         
-       
+        if hit == 's':
+           
+             
+                          
+            
+    def conitinuePlaying(self):
+        
+    def printPlayerStats(self):
+         
+        print("\nCurrent Hand: " + str(self.player.current_hand()))
+        print("Current Hand Value: " + str(self.player.hand.total))
+        print("Current Pot: $" + str(self.player.bankRoll) + '\n')
     
 
 
